@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace MediaTekDocuments.manager
@@ -87,8 +88,28 @@ namespace MediaTekDocuments.manager
                 default:
                     return new JObject();
             }
-            // récupération de l'information retournée par l'api
-            return httpResponse.Content.ReadAsAsync<JObject>().Result;
+            // Vérification du type de contenu de la réponse
+            if (httpResponse.Content.Headers.ContentType.MediaType != "application/json")
+            {
+                // Log ou traitement pour comprendre la réponse (probablement HTML si erreur)
+                string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Réponse reçue : " + responseContent);
+                return new JObject();
+            }
+
+            // Récupération de l'information retournée par l'API
+            try
+            {
+                // Désérialisation de la réponse JSON
+                string jsonContent = httpResponse.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<JObject>(jsonContent);
+            }
+            catch (Exception ex)
+            {
+                // Gestion d'erreur en cas de problème de désérialisation
+                Console.WriteLine("Erreur lors de la désérialisation : " + ex.Message);
+                return new JObject();
+            }
         }
 
     }

@@ -18,7 +18,7 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// adresse de l'API
         /// </summary>
-        private static readonly string uriApi = "http://localhost/rest_mediatekdocuments/";
+        private static readonly string uriApi = "http://localhost:8000/restmediatekdocuments/";
         /// <summary>
         /// instance unique de la classe
         /// </summary>
@@ -180,7 +180,7 @@ namespace MediaTekDocuments.dal
                 JObject retour = api.RecupDistant(methode, message, parametres);
                 // extraction du code retourné
                 String code = (String)retour["code"];
-                if (code.Equals("200"))
+                if (retour["code"] != null && retour["code"].ToString().Equals("200"))
                 {
                     // dans le cas du GET (select), récupération de la liste d'objets
                     if (methode.Equals(GET))
