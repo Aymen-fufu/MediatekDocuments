@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.IO;
+using MediaTekDocuments.dal;
 
 namespace MediaTekDocuments.view
 
@@ -1238,6 +1239,48 @@ namespace MediaTekDocuments.view
                 pcbReceptionExemplaireRevueImage.Image = null;
             }
         }
+
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (FormAjouterLivre formAjouterLivre = new FormAjouterLivre())
+            {
+                if (formAjouterLivre.ShowDialog() == DialogResult.OK)
+                {
+                    // Récupérer les données saisies
+                    Livre nouveauLivre = formAjouterLivre.NouveauLivre;
+
+                    // Ajouter le livre via la méthode AjouterDocument
+                    bool success = Access.GetInstance().AjouterDocument("livre", nouveauLivre);
+
+                    if (success)
+                    {
+                        MessageBox.Show("Le livre a été ajouté avec succès.", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Actualisez la liste des livres si nécessaire
+                    }
+                    else
+                    {
+                        MessageBox.Show("Une erreur est survenue lors de l'ajout du livre.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgvLivresListe_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void FrmMediatek_Load(object sender, EventArgs e)
+        {
+
+        }
+        
     }
 }

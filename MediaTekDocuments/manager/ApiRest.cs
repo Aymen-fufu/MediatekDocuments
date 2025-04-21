@@ -63,52 +63,67 @@ namespace MediaTekDocuments.manager
         /// <returns>liste d'objets (select) ou liste vide (ok) ou null si erreur</returns>
         public JObject RecupDistant(string methode, string message, String parametres)
         {
-            // transformation des paramètres pour les mettre dans le body
-            StringContent content = null;
-            if(!(parametres is null))
-            {
-                content = new StringContent(parametres, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
-            }
-            // envoi du message et attente de la réponse
-            switch (methode)
-            {
-                case "GET":
-                    httpResponse = httpClient.GetAsync(message).Result;
-                    break;
-                case "POST":
-                    httpResponse = httpClient.PostAsync(message, content).Result;
-                    break;
-                case "PUT":
-                    httpResponse = httpClient.PutAsync(message, content).Result;
-                    break;
-                case "DELETE":
-                    httpResponse = httpClient.DeleteAsync(message).Result;
-                    break;
-                // methode incorrecte
-                default:
-                    return new JObject();
-            }
-            // Vérification du type de contenu de la réponse
-            if (httpResponse.Content.Headers.ContentType.MediaType != "application/json")
-            {
-                // Log ou traitement pour comprendre la réponse (probablement HTML si erreur)
-                string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Réponse reçue : " + responseContent);
-                return new JObject();
-            }
-
-            // Récupération de l'information retournée par l'API
             try
             {
-                // Désérialisation de la réponse JSON
-                string jsonContent = httpResponse.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<JObject>(jsonContent);
+                // transformation des paramètres pour les mettre dans le body
+                StringContent content = null;
+                if (!(parametres is null))
+                {
+                    // Toujours utiliser application/x-www-form-urlencoded comme pour les autres méthodes
+                    content = new StringContent(parametres, System.Text.Encoding.UTF8, "application/x-www-form-urlencoded");
+                    Console.WriteLine($"Content-Type: {content.Headers.ContentType}");
+                }
+
+                // envoi du message et attente de la réponse
+                switch (methode)
+                {
+                    case "GET":
+                        httpResponse = httpClient.GetAsync(message).Result;
+                        break;
+                    case "POST":
+                        httpResponse = httpClient.PostAsync(message, content).Result;
+                        break;
+                    case "PUT":
+                        httpResponse = httpClient.PutAsync(message, content).Result;
+                        break;
+                    case "DELETE":
+                        httpResponse = httpClient.DeleteAsync(message).Result;
+                        break;
+                    default:
+                        return new JObject { ["code"] = "400", ["message"] = "Méthode HTTP non supportée" };
+                }
+
+                // Récupération du contenu de la réponse
+                string responseContent = httpResponse.Content.ReadAsStringAsync().Result;
+                Console.WriteLine($"Status Code: {httpResponse.StatusCode}");
+                Console.WriteLine($"Response Content: {responseContent}");
+
+                // Si nous avons une réponse JSON valide
+                try
+                {
+                    return JsonConvert.DeserializeObject<JObject>(responseContent);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erreur de désérialisation : {ex.Message}");
+                    return new JObject
+                    {
+                        ["code"] = "500",
+                        ["message"] = "Erreur lors de la désérialisation de la réponse",
+                        ["result"] = new JArray()
+                    };
+                }
             }
             catch (Exception ex)
             {
-                // Gestion d'erreur en cas de problème de désérialisation
-                Console.WriteLine("Erreur lors de la désérialisation : " + ex.Message);
-                return new JObject();
+                Console.WriteLine($"Erreur dans RecupDistant : {ex.Message}");
+                Console.WriteLine($"Stack trace : {ex.StackTrace}");
+                return new JObject
+                {
+                    ["code"] = "500",
+                    ["message"] = ex.Message,
+                    ["result"] = new JArray()
+                };
             }
         }
 

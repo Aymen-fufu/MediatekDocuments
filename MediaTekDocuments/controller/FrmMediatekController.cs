@@ -96,5 +96,35 @@ namespace MediaTekDocuments.controller
         {
             return access.CreerExemplaire(exemplaire);
         }
+
+        public bool AjouterDocument(string type, Document document)
+        {
+            return access.AjouterDocument(type, document);
+        }
+
+        public bool ModifierDocument(string type, Document document)
+        {
+            return access.ModifierDocument(type, document);
+        }
+
+        public bool SupprimerDocument(string type, Document document)
+        {
+            List<Exemplaire> exemplaires = access.GetExemplairesRevue(document.Id);
+            if(exemplaires.Count > 0)
+            {
+                return false;
+            }
+            if (HasCommandesDocument(document.Id))
+            {
+                return false;
+            }
+            return access.SupprimerDocument(type, document);
+        }
+
+        public bool HasCommandesDocument(string idDocument)
+        {
+            return access.HasCommandesDocument(idDocument);
+        }
+
     }
 }
