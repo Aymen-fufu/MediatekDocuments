@@ -59,6 +59,15 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
+        /// Retourne les revues dont l'abonnement arrive a expiration dans moins de 30 jours à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets RevueAbonnementAExpiration</returns>
+        public List<RevueAbonnementAExpiration> GetRevuesAbonnementAExpirationProchaine()
+        {
+            return access.GetRevuesAbonnementAExpirationProchaine();
+        }
+
+        /// <summary>
         /// getter sur les rayons
         /// </summary>
         /// <returns>Liste d'objets Rayon</returns>
@@ -90,11 +99,20 @@ namespace MediaTekDocuments.controller
         /// <summary>
         /// Retourne le nombre de commandes d'un document
         /// </summary>
-        /// <param name="idDocument">id du document concerné</param>
-        /// <returns>Nombre de commandes du document</returns>
-        public int GetCommandesCount(string idDocuement)
+        /// <param name="idDocument">id de la revue concerné</param>
+        /// <returns>Nombre de commandes de la revue</returns>
+        public int GetCommandesCountRevue(string idDocuement)
         {
-            return access.GetCommandesCount(idDocuement);
+            return access.GetCommandesCountRevue(idDocuement);
+        }
+
+        /// Retourne le nombre de commandes d'un livre / DVD
+        /// </summary>
+        /// <param name="idDocument">id du livre / DVD concerné</param>
+        /// <returns>Nombre de commandes du livre / DVD</returns>
+        public int GetCommandesCountLivreDvd(string idDocuement)
+        {
+            return access.GetCommandesCountLivreDvd(idDocuement);
         }
 
         /// <summary>
