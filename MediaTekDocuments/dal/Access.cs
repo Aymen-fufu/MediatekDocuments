@@ -18,7 +18,7 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// adresse de l'API
         /// </summary>
-        private static readonly string uriApi = "http://localhost:8000/restmediatekdocuments/";
+        private static readonly string uriApi = "http://localhost/rest_mediatekdocuments/";
         /// <summary>
         /// instance unique de la classe
         /// </summary>
@@ -35,9 +35,13 @@ namespace MediaTekDocuments.dal
         /// méthode HTTP pour insert
         /// </summary>
         private const string POST = "POST";
-
+        /// <summary>
+        /// méthode HTTP pour update
+        /// </summary>
         private const string PUT = "PUT";
-
+        /// <summary>
+        /// méthode HTTP pour delete
+        /// </summary>
         private const string DELETE = "DELETE";
 
         /// <summary>
@@ -134,15 +138,27 @@ namespace MediaTekDocuments.dal
 
 
         /// <summary>
-        /// Retourne les exemplaires d'une revue
+        /// Retourne les exemplaires d'un document
         /// </summary>
-        /// <param name="idDocument">id de la revue concernée</param>
+        /// <param name="idDocument">id du document concerné</param>
         /// <returns>Liste d'objets Exemplaire</returns>
-        public List<Exemplaire> GetExemplairesRevue(string idDocument)
+        public List<Exemplaire> GetExemplaires(string idDocument)
         {
             String jsonIdDocument = convertToJson("id", idDocument);
             List<Exemplaire> lesExemplaires = TraitementRecup<Exemplaire>(GET, "exemplaire/" + jsonIdDocument, null);
             return lesExemplaires;
+        }
+
+        /// <summary>
+        /// Retourne le nombre de commandes d'un document
+        /// </summary>
+        /// <param name="idDocument">id du document concerné</param>
+        /// <returns>Nombre de commandes du document</returns>
+        public int GetCommandesCount(string idDocument)
+        {
+            String jsonIdDocument = convertToJson("id", idDocument);
+            List<object> lesExemplaires = TraitementRecup<object>(GET, "commandedocument/" + jsonIdDocument, null);
+            return lesExemplaires.Count;
         }
 
         /// <summary>
@@ -155,8 +171,188 @@ namespace MediaTekDocuments.dal
             String jsonExemplaire = JsonConvert.SerializeObject(exemplaire, new CustomDateTimeConverter());
             try
             {
-                List<Exemplaire> liste = TraitementRecup<Exemplaire>(POST, "exemplaire", "champs=" + jsonExemplaire);
+                List<Exemplaire> liste = TraitementRecup<Exemplaire>(POST, "exemplaire", "champs=" + jsonExemplaire, false);
                 return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Crée et ajoute un livre à la base de données
+        /// </summary>
+        /// <param name="livre">L'objet du livre à créer</param>
+        /// <returns>True si la création à réussi, false sinon</returns>
+        public bool CreerLivre(Livre livre)
+        {
+            String jsonLivre = JsonConvert.SerializeObject(livre);
+            try
+            {
+                List<Livre> liste = TraitementRecup<Livre>(POST, "livre", "champs=" + jsonLivre);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Modifie un livre dans la base de données
+        /// </summary>
+        /// <param name="livre">Le livre avec ses champs modifiés</param>
+        /// <returns>True si la modification à réussi, false sinon</returns>
+        public bool ModifierLivre(Livre livre)
+        {
+            String jsonLivre = JsonConvert.SerializeObject(livre);
+            try
+            {
+                List<Livre> liste = TraitementRecup<Livre>(PUT, "livre", "champs=" + jsonLivre);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Supprime un livre de la base de données
+        /// </summary>
+        /// <param name="idLivre">L'identifiant du livre à supprimer</param>
+        /// <returns>True si la suppression à réussi, false sinon</returns>
+        public bool SupprimerLivre(string idLivre)
+        {
+            String jsonLivre = convertToJson("Id", idLivre);
+            try
+            {
+                List<Livre> liste = TraitementRecup<Livre>(DELETE, "livre", "champs=" + jsonLivre, false);
+                return liste != null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Crée et ajoute un DVD à la base de données
+        /// </summary>
+        /// <param name="dvd">L'objet du DVD à créer</param>
+        /// <returns>True si la création à réussi, false sinon</returns>
+        public bool CreerDvd(Dvd dvd)
+        {
+            String jsonDvd = JsonConvert.SerializeObject(dvd);
+            try
+            {
+                List<Dvd> liste = TraitementRecup<Dvd>(POST, "dvd", "champs=" + jsonDvd);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Modifie un DVD dans la base de données
+        /// </summary>
+        /// <param name="dvd">Le DVD avec ses champs modifiés</param>
+        /// <returns>True si la modification à réussi, false sinon</returns>
+        public bool ModifierDvd(Dvd dvd)
+        {
+            String jsonDvd = JsonConvert.SerializeObject(dvd);
+            try
+            {
+                List<Dvd> liste = TraitementRecup<Dvd>(PUT, "dvd", "champs=" + jsonDvd);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Supprime un DVD de la base de données
+        /// </summary>
+        /// <param name="idDvd">L'identifiant du DVD à supprimer</param>
+        /// <returns>True si la suppression à réussi, false sinon</returns>
+        public bool SupprimerDvd(string idDvd)
+        {
+            String jsonDvd = convertToJson("Id", idDvd);
+            try
+            {
+                List<Dvd> liste = TraitementRecup<Dvd>(DELETE, "dvd", "champs=" + jsonDvd, false);
+                return liste != null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Crée et ajoute une revue à la base de données
+        /// </summary>
+        /// <param name="revue">L'objet de la revue à créer</param>
+        /// <returns>True si la création à réussi, false sinon</returns>
+        public bool CreerRevue(Revue revue)
+        {
+            String jsonRevue = JsonConvert.SerializeObject(revue);
+            try
+            {
+                List<Revue> liste = TraitementRecup<Revue>(POST, "revue", "champs=" + jsonRevue);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Modifie une revue dans la base de données
+        /// </summary>
+        /// <param name="revue">La revue avec ses champs modifiés</param>
+        /// <returns>True si la modification à réussi, false sinon</returns>
+        public bool ModifierRevue(Revue revue)
+        {
+            String jsonRevue = JsonConvert.SerializeObject(revue);
+            try
+            {
+                List<Revue> liste = TraitementRecup<Revue>(PUT, "revue", "champs=" + jsonRevue);
+                return liste.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Supprime une revue de la base de données
+        /// </summary>
+        /// <param name="idRevue">L'identifiant de la revue à supprimer</param>
+        /// <returns>True si la suppression à réussi, false sinon</returns>
+        public bool SupprimerRevue(string idRevue)
+        {
+            String jsonRevue = convertToJson("Id", idRevue);
+            try
+            {
+                List<Revue> liste = TraitementRecup<Revue>(DELETE, "revue", "champs=" + jsonRevue, false);
+                return liste != null;
             }
             catch (Exception ex)
             {
@@ -173,26 +369,23 @@ namespace MediaTekDocuments.dal
         /// <param name="message">information envoyée dans l'url</param>
         /// <param name="parametres">paramètres à envoyer dans le body, au format "chp1=val1&chp2=val2&..."</param>
         /// <returns>liste d'objets récupérés (ou liste vide)</returns>
-        private List<T> TraitementRecup<T>(String methode, String message, String parametres)
+        private List<T> TraitementRecup<T>(String methode, String message, String parametres, bool recupListeRetour = true)
         {
             // trans
             List<T> liste = new List<T>();
             try
             {
                 JObject retour = api.RecupDistant(methode, message, parametres);
-                Console.WriteLine("Retour de l'API : " + retour.ToString());
                 // extraction du code retourné
                 String code = (String)retour["code"];
-                if (retour["code"] != null && retour["code"].ToString().Equals("200"))
+                if (code.Equals("200"))
                 {
-                    // dans le cas du GET (select), récupération de la liste d'objets
-                    if (methode.Equals(GET) || methode.Equals(POST) || methode.Equals(PUT))
+                    if (recupListeRetour)
                     {
                         String resultString = JsonConvert.SerializeObject(retour["result"]);
                         // construction de la liste d'objets à partir du retour de l'api
                         liste = JsonConvert.DeserializeObject<List<T>>(resultString, new CustomBooleanJsonConverter());
                     }
-
                 }
                 else
                 {
@@ -206,6 +399,7 @@ namespace MediaTekDocuments.dal
             }
             return liste;
         }
+
         /// <summary>
         /// Convertit en json un couple nom/valeur
         /// </summary>
@@ -247,107 +441,6 @@ namespace MediaTekDocuments.dal
                 serializer.Serialize(writer, value);
             }
         }
-
-        public bool AjouterDocument(string type, Document document)
-        {
-            try
-            {
-                if (document == null)
-                {
-                    throw new ArgumentNullException(nameof(document), "Le document ne peut pas être null");
-                }
-
-              
-                // Conversion en JSON
-                string jsonDocument = JsonConvert.SerializeObject(document);
-
-                Console.WriteLine($"URL appelée : {uriApi}{type}");
-                Console.WriteLine("Document JSON : " + jsonDocument);
-
-                
-                List<Document> liste = TraitementRecup<Document>(POST, type, jsonDocument);
-                 
-                return (liste != null);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erreur lors de l'ajout du document : " + ex.Message);
-                Console.WriteLine("Stack trace : " + ex.StackTrace);
-                return false;
-            }
-        }
-
-        public bool ModifierDocument(string type, Document document)
-        {
-            string message = $"{type}/";
-            string JsonDocument = JsonConvert.SerializeObject(document);
-            try
-            {
-                List<Document> liste = TraitementRecup<Document>(PUT, message, "champs=" + JsonDocument);
-                return (liste != null);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Supprime un document
-        /// </summary>
-        public bool SupprimerDocument(string type, Document document)
-        {
-            // vérification de l'existence d'exemplaires associés
-            List<Exemplaire> exemplaires = GetExemplairesRevue(document.Id);
-            if (exemplaires.Count > 0)
-            {
-                Console.WriteLine("Impossible de supprimer le document, il y a des exemplaires associés.");
-                return false;
-            }
-
-            // vérification de l'existence de commandes associées
-            if (HasCommandesDocument(document.Id))
-            {
-                Console.WriteLine("Impossible de supprimer le document, il y a des commandes associées.");
-                return false;
-            }
-
-
-
-            string message = $"{type}/";
-            string JsonDocument = JsonConvert.SerializeObject(document);
-            try
-            {
-                List<Document> liste = TraitementRecup<Document>(DELETE, message, "champs=" + JsonDocument);
-                return (liste != null);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return false;
-
-        }
-
-        /// <summary>
-        /// Verifie si le document a des commandes associées
-        /// </sumary>
-        public bool HasCommandesDocument(string idDocument)
-        { 
-            string jsonIdDocument = convertToJson("id", idDocument);
-            try
-            {
-                List<Document> liste = TraitementRecup<Document>(GET, "document/" + jsonIdDocument, null);
-                return (liste != null && liste.Count > 0);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return true;
-            }
-        }
-
 
     }
 }
