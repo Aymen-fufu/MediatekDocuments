@@ -251,18 +251,9 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-
-
-
         /// Modification d'un exemplaire en base de données
-
-
         /// </summary>
-
-
         /// <param name="exemplaire">L'exemplaire à modifier</param>
-
-
         /// <returns>true si la modification a pu se faire (retour != null)</returns>
 
 
@@ -275,6 +266,29 @@ namespace MediaTekDocuments.dal
                 return (liste != null);
             }
             catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Suppression d'un exemplaire en base de données
+        /// </summary>
+        /// <param name="exemplaire">L'exemplaire à supprimer</param>
+        /// <returns>true si la suppression a pu se faire (retour != null)</returns>
+
+        public bool SupprimerExemplaire(Exemplaire exemplaire)
+        {
+            String jsonExemplaire = JsonConvert.SerializeObject(exemplaire.ToRestApiObject(), new CustomDateTimeConverter());
+            try
+            {
+                List<Exemplaire> liste = TraitementRecup<Exemplaire>(DELETE, "exemplaire", "champs=" + jsonExemplaire, false);
+                return (liste != null);
+
+            }
+            catch (Exception ex)
+
             {
                 Console.WriteLine(ex.Message);
             }
@@ -583,6 +597,28 @@ namespace MediaTekDocuments.dal
                 Console.WriteLine(ex.Message);
             }
             return false;
+        }
+
+        /// <summary>
+        /// Gere l'authentification de l'utilisateur
+        /// </summary>
+        /// <param name="login">L'identifiant</param>
+        /// /// <param name="password">Le mot de passe</param>
+
+        public Utilisateur ControleAuthentification(string login, string password)
+        {
+            String jsonIdentifiants = JsonConvert.SerializeObject(new { Login = login, Password = password });
+            try
+            {
+                List<Utilisateur> liste = TraitementRecup<Utilisateur>(PUT, "authentification", "champs=" + jsonIdentifiants);
+
+                return liste?.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return null;
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace MediaTekDocuments.view
     public partial class FrmMediatek : Form
     {
         #region Commun
+        private readonly Utilisateur utilisateur;
         private readonly FrmMediatekController controller;
         private readonly BindingSource bdgGenres = new BindingSource();
         private readonly BindingSource bdgPublics = new BindingSource();
@@ -24,28 +25,33 @@ namespace MediaTekDocuments.view
         private readonly BindingSource bdgPublicsEdit = new BindingSource();
         private readonly BindingSource bdgRayonsEdit = new BindingSource();
 
-        /// <summary>
-        /// Constructeur : création du contrôleur lié à ce formulaire
+        /// Constructeur : création du contrôleur lié à ce formulaire et activation / désactivation
+        /// des fonctionnalités en fonction de l'utilisateur de l'application
         /// </summary>
-        internal FrmMediatek()
+        internal FrmMediatek(Utilisateur utilisateur)
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
+            this.utilisateur = utilisateur;
 
             List<RevueAbonnementAExpiration> revuesExpirationProchaine = controller.GetRevuesAbonnementAExpirationProchaine();
 
-            if (revuesExpirationProchaine.Count != 0)
+            if (!utilisateur.Administrateur && utilisateur.Service != "Administratif")
             {
-                string titre = "Des revues arrivent à expiration";
-                string message = "Les revues suivantes arrivent à expiration dans moins de 30 jours :\n";
-
-                foreach (RevueAbonnementAExpiration revue in revuesExpirationProchaine)
-                    message += "- '" + revue.Titre + "' - Expire le " + revue.DateFinAbonnement.ToShortDateString() + '\n';
-
-                // Enlèvement du dernière retour à la ligne
-                message.Remove(message.Length - 1);
-
-                MessageBox.Show(message, titre);
+                if (utilisateur.Service == "Prets")
+                {
+                    grpLivresActions.Enabled = false;
+                    btnLivresExemplairesSupprimer.Visible = false;
+                    dgvLivresExemplaires.CellMouseDoubleClick -= dgvLivresExemplaires_CellMouseDoubleClick;
+                    grpDvdActions.Enabled = false;
+                    btnDvdExemplairesSupprimer.Visible = false;
+                    dgvDvdExemplaires.CellMouseDoubleClick -= dgvDvdExemplaires_CellMouseDoubleClick;
+                    grpRevuesActions.Enabled = false;
+                    grpReceptionExemplaire.Enabled = false;
+                    btnReceptionParutionsSupprimer.Visible = false;
+                    dgvReceptionExemplairesListe.CellMouseDoubleClick -= dgvReceptionExemplairesListe_CellMouseDoubleClick;
+                }
+                return;
             }
         }
 
@@ -764,8 +770,43 @@ namespace MediaTekDocuments.view
                 controller.ModifierExemplaire(exemplaire);
             }
         }
-        #endregion
 
+        /// <summary>
+
+
+
+        /// Méthode événementielle au changement de selection du DataGridView des exemplaires
+        /// Cette méthode gère l'état d'activation du bouton de suppression d'exemplaire
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+
+        private void dgvLivresExemplaires_SelectionChanged(object sender, EventArgs e)
+        {
+            btnLivresExemplairesSupprimer.Enabled = dgvLivresExemplaires.CurrentCell != null;
+        }
+
+        /// <summary>
+        /// Méthode événementielle au clic sur le bouton supprimer des exemplaires
+        /// Cette méthode gère la suppression d'un exemplaire après confirmation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void btnLivresExemplairesSupprimer_Click(object sender, EventArgs e)
+        {
+            Exemplaire exemplaire = (Exemplaire)bdgLivresExemplaires.List[bdgLivresExemplaires.Position];
+            if (MessageBox.Show("Voulez-vous vraiment supprimer l'exemplaire N°" + exemplaire.Numero + " ?",
+                    "Suppression d'un exemplaire", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (controller.SupprimerExemplaire(exemplaire))
+                    DgvLivresListe_SelectionChanged(null, null);
+            }
+        }
+
+
+        #endregion
         #region Onglet Dvd
         private readonly BindingSource bdgDvdListe = new BindingSource();
         private readonly BindingSource bdgDvdExemplaires = new BindingSource();
@@ -1451,6 +1492,38 @@ namespace MediaTekDocuments.view
                 controller.ModifierExemplaire(exemplaire);
             }
         }
+
+        /// <summary>
+        /// Méthode événementielle au changement de selection du DataGridView des exemplaires
+        /// Cette méthode gère l'état d'activation du bouton de suppression d'exemplaire
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+
+        private void dgvDvdExemplaires_SelectionChanged(object sender, EventArgs e)
+        {
+            btnDvdExemplairesSupprimer.Enabled = dgvDvdExemplaires.CurrentCell != null;
+        }
+
+        /// <summary>
+        /// Méthode événementielle au clic sur le bouton supprimer des exemplaires
+        /// Cette méthode gère la suppression d'un exemplaire après confirmation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void btnDvdExemplairesSupprimer_Click(object sender, EventArgs e)
+        {
+            Exemplaire exemplaire = (Exemplaire)bdgDvdExemplaires.List[bdgDvdExemplaires.Position];
+            if (MessageBox.Show("Voulez-vous vraiment supprimer l'exemplaire N°" + exemplaire.Numero + " ?",
+                    "Suppression d'un exemplaire", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (controller.SupprimerExemplaire(exemplaire))
+                    dgvDvdListe_SelectionChanged(null, null);
+            }
+        }
+
         #endregion
 
         #region Onglet Revues
@@ -2174,11 +2247,12 @@ namespace MediaTekDocuments.view
         /// <param name="acces">true ou false</param>
         private void AccesReceptionExemplaireGroupBox(bool acces)
         {
-            grpReceptionExemplaire.Enabled = acces;
-            txbReceptionExemplaireImage.Text = "";
-            txbReceptionExemplaireNumero.Text = "";
-            pcbReceptionExemplaireImage.Image = null;
-            dtpReceptionExemplaireDate.Value = DateTime.Now;
+            if (!utilisateur.Administrateur && utilisateur.Service != "Prets")
+                grpReceptionExemplaire.Enabled = acces;
+                txbReceptionExemplaireImage.Text = "";
+                txbReceptionExemplaireNumero.Text = "";
+                pcbReceptionExemplaireImage.Image = null;
+                dtpReceptionExemplaireDate.Value = DateTime.Now;
         }
 
         /// <summary>
@@ -2323,6 +2397,29 @@ namespace MediaTekDocuments.view
                 controller.ModifierExemplaire(exemplaire);
             }
         }
+
+        /// <summary>
+        /// Méthode événementielle au clic sur le bouton supprimer des parutions
+        /// Cette méthode gère la suppression d'une parution après confirmation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+
+        private void btnReceptionParutionsSupprimer_Click(object sender, EventArgs e)
+        {
+            Exemplaire exemplaire = (Exemplaire)bdgParutionsExemplairesListe.List[bdgParutionsExemplairesListe.Position];
+            if (MessageBox.Show("Voulez-vous vraiment supprimer la parution N°" + exemplaire.Numero + " ?",
+                    "Suppression d'une parution", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                if (controller.SupprimerExemplaire(exemplaire))
+                {
+                    AfficheReceptionExemplairesRevue();
+                    dgvReceptionExemplairesListe_SelectionChanged(null, null);
+                }
+            }
+        }
+
         #endregion
     }
 }
