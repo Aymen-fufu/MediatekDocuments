@@ -126,6 +126,17 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
+        /// Modification d'un exemplaire en base de données
+        /// </summary>
+        /// <param name="exemplaire">L'exemplaire à modifier</param>
+        /// <returns>true si la modification a pu se faire (retour != null)</returns>
+
+        public bool ModifierExemplaire(Exemplaire exemplaire)
+        {
+            return access.ModifierExemplaire(exemplaire);
+        }
+
+        /// <summary>
         /// Crée un livre dans la bdd
         /// </summary>
         /// <param name="livre">L'objet Livre concerné</param>
