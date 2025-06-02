@@ -1,0 +1,1 @@
+search_result['73']=["topic_0000000000000033.html","Access.CreerAbonnement Method","Crée et ajoute un abonnement d\u0027une revue à la base de données"];

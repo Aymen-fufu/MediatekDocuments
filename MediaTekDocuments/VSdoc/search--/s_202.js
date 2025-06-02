@@ -1,0 +1,1 @@
+search_result['202']=["topic_0000000000000077.html","Rayon Class","Classe métier Rayon (rayon de classement du document) hérite de Categorie"];

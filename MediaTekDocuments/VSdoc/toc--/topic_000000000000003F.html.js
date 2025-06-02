@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"MediaTekDocuments Reference","topic_00000000000000A1.html"],['64',"MediaTekDocuments.model Namespace","topic_0000000000000038.html"],['72',"Categorie Class","topic_000000000000003E.html"],['74',"Properties","topic_000000000000003E_props--.html"],['75',"Id Property","topic_000000000000003F.html"]];

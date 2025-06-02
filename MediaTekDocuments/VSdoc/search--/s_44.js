@@ -1,0 +1,1 @@
+search_result['44']=["topic_0000000000000018.html","Access.GetAllPublics Method","Retourne toutes les catégories de public à partir de la BDD"];

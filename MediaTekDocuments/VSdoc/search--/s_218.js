@@ -1,0 +1,1 @@
+search_result['218']=["topic_000000000000007D.html","RevueAbonnementAExpiration Class","Classe représentant une revue dont l\u0027abonnement arrive a expiration"];

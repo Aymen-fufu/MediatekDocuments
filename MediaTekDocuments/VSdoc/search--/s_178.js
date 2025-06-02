@@ -1,0 +1,1 @@
+search_result['178']=["topic_000000000000006E.html","Livre Class","Classe métier Livre hérite de LivreDvd : contient des propriétés spécifiques aux livres"];

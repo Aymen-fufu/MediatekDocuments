@@ -1,0 +1,1 @@
+search_result['69']=["topic_000000000000002F.html","Access.SupprimerRevue Method","Supprime une revue de la base de données"];

@@ -39,7 +39,7 @@ namespace MediaTekDocuments.controller
         public bool SupprimerAbonnement(Abonnement abonnement)
 
         {
-            return access.SupprimerAbonnement(abonnement.Id);
+            return access.SupprimerAbonnemnt(abonnement.Id);
         }
 
         /// <summary>
@@ -58,9 +58,20 @@ namespace MediaTekDocuments.controller
         /// </summary>
         /// <param name="abonnement">La commande avec ses champs modifiés</param>
         /// <returns>True si la modification à réussi, false sinon</returns>
-        public bool ModifierCommande(Abonnement abonnement)
+        public bool ModifierAbonnement(Abonnement abonnement)
         {
             return access.ModifierAbonnement(abonnement);
+        }
+
+
+        /// <summary>
+        /// Supprime un abonnement d'une revue dans la base de données
+        /// </summary>
+        /// <param name="abonnement">La commande avec ses champs modifiés</param>
+        /// <returns>True si la modification à réussi, false sinon</returns>
+        public bool SupprimerCommande (Abonnement abonnement)
+        {
+            return access.SupprimerAbonnemnt (abonnement.Id);
         }
 
         /// <summary>

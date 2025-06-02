@@ -1,0 +1,1 @@
+search_result['171']=["topic_000000000000006C.html","Genre Class","Classe métier Genre : hérite de Categorie"];

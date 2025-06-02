@@ -1,0 +1,1 @@
+search_result['88']=["topic_000000000000003E.html","Categorie Class","Classe métier Categorie (réunit les informations des classes Public, Genre et Rayon)"];

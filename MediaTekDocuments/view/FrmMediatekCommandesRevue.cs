@@ -182,7 +182,7 @@ namespace MediaTekDocuments.view
                 commandesEnModif = false;
                 Abonnement commandeModif = new Abonnement(numero, dateCommande, montant, dateFinAbonnement, revue.Id);
 
-                bool resultat = controller.ModifierCommande(commandeModif);
+                bool resultat = controller.ModifierAbonnement(commandeModif);
                 if (resultat)
                 {
                     bdgCommandesListe.List[bdgCommandesListe.Position] = commandeModif;
@@ -197,7 +197,7 @@ namespace MediaTekDocuments.view
                 commandesEnAjout = false;
                 Abonnement nouvelleCommande = new Abonnement(numero, dateCommande, montant, dateFinAbonnement, revue.Id);
 
-                bool resultat = controller.CreerCommande(nouvelleCommande);
+                bool resultat = controller.CreerAbonnement(nouvelleCommande);
                 if (resultat)
                 {
                     lesCommandes.Add(nouvelleCommande);

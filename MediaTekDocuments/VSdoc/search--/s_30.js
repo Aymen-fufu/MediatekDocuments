@@ -1,0 +1,1 @@
+search_result['30']=["topic_000000000000000F.html","FrmMediatekCommandesRevueController.CreerAbonnement Method","Création d\u0027un abonnement d\u0027une revue dans la base de données"];

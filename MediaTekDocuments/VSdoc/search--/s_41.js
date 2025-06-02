@@ -1,0 +1,1 @@
+search_result['41']=["topic_0000000000000015.html","Access.GetInstance Method","Création et retour de l\u0027instance unique de la classe"];

@@ -1,0 +1,1 @@
+search_result['195']=["topic_0000000000000075.html","Public Class","Classe métier Public (public concerné par le document) hérite de Categorie"];

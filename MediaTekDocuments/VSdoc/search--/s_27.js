@@ -1,0 +1,1 @@
+search_result['27']=["topic_000000000000000C.html","FrmMediatekCommandesRevueController Constructor","Récupération de l\u0027instance unique d\u0027accès aux données"];

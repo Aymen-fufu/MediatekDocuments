@@ -1,0 +1,1 @@
+search_result['288']=["topic_000000000000009D.html","FrmModifEtat Class","Formulaire demandant à l\u0027utilisateur de modifier un état (utilisé pour modifier les états des exemplaires)"];

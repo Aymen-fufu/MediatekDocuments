@@ -1,0 +1,1 @@
+search_result['87']=["topic_000000000000003D.html","Abonnement.ParutionDansAbonnement Method","Vérifie si une date d\u0027un exemplaire d\u0027une revue est paru dans un abonnement"];

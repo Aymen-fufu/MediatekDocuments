@@ -1,0 +1,1 @@
+search_result['97']=["topic_0000000000000042.html","Categorie.ToString Method","Récupération du libellé pour l\u0027affichage dans les combos"];

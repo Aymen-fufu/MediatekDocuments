@@ -1,0 +1,1 @@
+search_result['78']=["topic_0000000000000039.html","Abonnement Class","Classe métier Abonnement représentant une commande de revue"];
